@@ -302,6 +302,7 @@ func MyMiddleWare(res *minima.Response, req *minima.Request) {
 - [@megatank58](https://github.com/megatank58)
 - [@Shubhaankar-Sharma](https://github.com/Shubhaankar-Sharma)
 - [@savioxavier](https://github.com/savioxavier)
+- [@Panquesito7](https://github.com/Panquesito7)
 
 #### Community Contributors
 
