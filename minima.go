@@ -19,7 +19,7 @@ import (
  * @property {*Config} [Config] The core config file for middlewares and router instances
  * @property {*time.Duration} [drain] The router's drain time
  */
-type minima struct {
+type Minima struct {
 	server        *http.Server
 	started       bool
 	Timeout       time.Duration
