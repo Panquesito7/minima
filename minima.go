@@ -13,8 +13,8 @@ import (
  * @property {bool} [started] Whether the server has started or not
  * @property {*time.Duration} [Timeout] The router's breathing time
  * @property {*Router} [router] The core router instance running with the server
- * @property {[]Handler} [minmiddleware] The standard minima handler stack
- * @property {[]http.HandlerFunc} [rawmiddleware] The raw net/http minima handler stack
+ * @property {[]Handler} [minmiddleware] The standard Minima handler stack
+ * @property {[]http.HandlerFunc} [rawmiddleware] The raw net/http Minima handler stack
  * @property {map[string]interface{}} [properties] The properties for the server instance
  * @property {*Config} [Config] The core config file for middlewares and router instances
  * @property {*time.Duration} [drain] The router's drain time
@@ -32,22 +32,22 @@ type Minima struct {
 }
 
 /**
- * @info Make a new default minima instance
+ * @info Make a new default Minima instance
  * @example `
 func main() {
-	app := minima.New()
+	app := Minima.New()
 
-	app.Get("/", func(res *minima.Response, req *minima.Request) {
+	app.Get("/", func(res *Minima.Response, req *Minima.Request) {
 		res.Status(200).Send("Hello World")
 	})
 
 	app.Listen(":3000")
 }
 `
- * @returns {minima}
+ * @returns {Minima}
 */
-func New() *minima {
-	return &minima{
+func New() *Minima {
+	return &Minima{
 		router: NewRouter(),
 		Config: NewConfig(),
 		drain:  0,
@@ -59,7 +59,7 @@ func New() *minima {
  * @param {string} [addr] The port for the server instance to run on
  * @returns {error}
  */
-func (m *minima) Listen(addr string) error {
+func (m *Minima) Listen(addr string) error {
 	if m.started {
 		log.Panicf("Minimia's instance is already running at %s.", m.server.Addr)
 	}
@@ -70,12 +70,12 @@ func (m *minima) Listen(addr string) error {
 }
 
 /**
- * @info Injects the actual minima server logic to http
+ * @info Injects the actual Minima server logic to http
  * @param {http.ResponseWriter} [w] The net/http response instance
  * @param {http.Request} [r] The net/http request instance
  * @returns {}
  */
-func (m *minima) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (m *Minima) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	f, params, match := m.router.routes[r.Method].Get(r.URL.Path)
 
 	if match {
@@ -105,9 +105,9 @@ func (m *minima) ServeHTTP(w http.ResponseWriter, r *http.Request) {
  * @info Adds route with Get method
  * @param {string} [path] The route path
  * @param {...Handler} [handler] The handler for the given route
- * @returns {*minima}
+ * @returns {*Minima}
  */
-func (m *minima) Get(path string, handler Handler) *minima {
+func (m *Minima) Get(path string, handler Handler) *Minima {
 	m.router.Get(path, handler)
 	return m
 }
@@ -116,9 +116,9 @@ func (m *minima) Get(path string, handler Handler) *minima {
  * @info Adds route with Put method
  * @param {string} [path] The route path
  * @param {...Handler} [handler] The handler for the given route
- * @returns {*minima}
+ * @returns {*Minima}
  */
-func (m *minima) Put(path string, handler Handler) *minima {
+func (m *Minima) Put(path string, handler Handler) *Minima {
 	m.router.Put(path, handler)
 	return m
 }
@@ -127,9 +127,9 @@ func (m *minima) Put(path string, handler Handler) *minima {
  * @info Adds route with Options method
  * @param {string} [path] The route path
  * @param {...Handler} [handler] The handler for the given route
- * @returns {*minima}
+ * @returns {*Minima}
  */
-func (m *minima) Options(path string, handler Handler) *minima {
+func (m *Minima) Options(path string, handler Handler) *Minima {
 	m.router.Options(path, handler)
 	return m
 }
@@ -138,9 +138,9 @@ func (m *minima) Options(path string, handler Handler) *minima {
  * @info Adds route with Head method
  * @param {string} [path] The route path
  * @param {...Handler} [handler] The handler for the given route
- * @returns {*minima}
+ * @returns {*Minima}
  */
-func (m *minima) Head(path string, handler Handler) *minima {
+func (m *Minima) Head(path string, handler Handler) *Minima {
 	m.router.Head(path, handler)
 	return m
 }
@@ -149,9 +149,9 @@ func (m *minima) Head(path string, handler Handler) *minima {
  * @info Adds route with Delete method
  * @param {string} [path] The route path
  * @param {...Handler} [handler] The handler for the given route
- * @returns {*minima}
+ * @returns {*Minima}
  */
-func (m *minima) Delete(path string, handler Handler) *minima {
+func (m *Minima) Delete(path string, handler Handler) *Minima {
 	m.router.Delete(path, handler)
 	return m
 }
@@ -160,9 +160,9 @@ func (m *minima) Delete(path string, handler Handler) *minima {
  * @info Adds route with Patch method
  * @param {string} [path] The route path
  * @param {...Handler} [handler] The handler for the given route
- * @returns {*minima}
+ * @returns {*Minima}
  */
-func (m *minima) Patch(path string, handler Handler) *minima {
+func (m *Minima) Patch(path string, handler Handler) *Minima {
 	m.router.Patch(path, handler)
 	return m
 }
@@ -171,19 +171,19 @@ func (m *minima) Patch(path string, handler Handler) *minima {
  * @info Adds route with Post method
  * @param {string} [path] The route path
  * @param {...Handler} [handler] The handler for the given route
- * @returns {*minima}
+ * @returns {*Minima}
  */
-func (m *minima) Post(path string, handler Handler) *minima {
+func (m *Minima) Post(path string, handler Handler) *Minima {
 	m.router.Post(path, handler)
 	return m
 }
 
 /**
- * @info Injects the NotFound handler to the minima instance
+ * @info Injects the NotFound handler to the Minima instance
  * @param {Handler} [handler] Minima handler instance
- * @returns {*minima}
+ * @returns {*Minima}
  */
-func (m *minima) NotFound(handler Handler) *minima {
+func (m *Minima) NotFound(handler Handler) *Minima {
 	m.router.NotFound(handler)
 	return m
 }
@@ -191,9 +191,9 @@ func (m *minima) NotFound(handler Handler) *minima {
 /**
  * @info Injects the routes from the router to core stack
  * @param {*Router} [router] Minima router instance
- * @returns {*minima}
+ * @returns {*Minima}
  */
-func (m *minima) UseRouter(router *Router) *minima {
+func (m *Minima) UseRouter(router *Router) *Minima {
 	m.router.UseRouter(router)
 	return m
 }
@@ -202,9 +202,9 @@ func (m *minima) UseRouter(router *Router) *minima {
  * @info Mounts router to a specific path
  * @param {string} [path] The route path
  * @param {*Router} [router] Minima router instance
- * @returns {*minima}
+ * @returns {*Minima}
  */
-func (m *minima) Mount(path string, router *Router) *minima {
+func (m *Minima) Mount(path string, router *Router) *Minima {
 	m.router.Mount(path, router)
 	return m
 }
@@ -212,9 +212,9 @@ func (m *minima) Mount(path string, router *Router) *minima {
 /**
  * @info Injects middlewares and routers directly to core instance
  * @param {*Config} [config] The config instance
- * @returns {*minima}
+ * @returns {*Minima}
  */
-func (m *minima) UseConfig(config *Config) *minima {
+func (m *Minima) UseConfig(config *Config) *Minima {
 	m.minmiddleware = append(m.minmiddleware, config.Middleware...)
 	m.rawmiddleware = append(m.rawmiddleware, config.HttpHandler...)
 	for _, router := range config.Router {
@@ -226,9 +226,9 @@ func (m *minima) UseConfig(config *Config) *minima {
 /**
  * @info The drain timeout for the core instance
  * @param {time.Duration} [time] The time period for drain
- * @returns {*minima}
+ * @returns {*Minima}
  */
-func (m *minima) ShutdownTimeout(t time.Duration) *minima {
+func (m *Minima) ShutdownTimeout(t time.Duration) *Minima {
 	m.drain = t
 	return m
 }
@@ -238,7 +238,7 @@ func (m *minima) ShutdownTimeout(t time.Duration) *minima {
  * @param {context.Context} [ctx] The context for shutdown
  * @returns {error}
  */
-func (m *minima) Shutdown(ctx context.Context) error {
+func (m *Minima) Shutdown(ctx context.Context) error {
 	log.Println("Stopping the server")
 	return m.server.Shutdown(ctx)
 }
@@ -247,9 +247,9 @@ func (m *minima) Shutdown(ctx context.Context) error {
  * @info Declares prop for core properties
  * @param {string} [key] Key for the prop
  * @param {interface{}} [value] Value of the prop
- * @returns {*minima}
+ * @returns {*Minima}
  */
-func (m *minima) SetProp(key string, value interface{}) *minima {
+func (m *Minima) SetProp(key string, value interface{}) *Minima {
 	m.properties[key] = value
 	return m
 }
@@ -259,16 +259,16 @@ func (m *minima) SetProp(key string, value interface{}) *minima {
  * @param {string} [key] Key for the prop
  * @returns {interface{}}
  */
-func (m *minima) GetProp(key string) interface{} {
+func (m *Minima) GetProp(key string) interface{} {
 	return m.properties[key]
 }
 
 /**
- * @info Injects minima middleware to the stack
+ * @info Injects Minima middleware to the stack
  * @param {...Handler} [handler] The handler stack to append
  * @returns {}
  */
-func (m *minima) Use(handler ...Handler) {
+func (m *Minima) Use(handler ...Handler) {
 	m.minmiddleware = append(m.minmiddleware, handler...)
 }
 
@@ -277,17 +277,17 @@ func (m *minima) Use(handler ...Handler) {
  * @param {...http.HandlerFunc} [handler] The handler stack to append
  * @returns {}
  */
-func (m *minima) UseRaw(handler ...http.HandlerFunc) {
+func (m *Minima) UseRaw(handler ...http.HandlerFunc) {
 	m.rawmiddleware = append(m.rawmiddleware, handler...)
 }
 
 /**
- * @info Serves and injects the middlewares to minima logic
- * @param {Response} [res] The minima response instance
- * @param {Request} [req] The minima req instance
+ * @info Serves and injects the middlewares to Minima logic
+ * @param {Response} [res] The Minima response instance
+ * @param {Request} [req] The Minima req instance
  * @returns {}
  */
-func (m *minima) ServeMiddleware(res *Response, req *Request) {
+func (m *Minima) ServeMiddleware(res *Response, req *Request) {
 	if len(m.rawmiddleware) == 0 {
 		return
 	}
